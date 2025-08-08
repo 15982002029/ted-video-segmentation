@@ -292,6 +292,11 @@ class YOLOMediaPipeSegmenter:
         
         self.stats['stage1_yolo_detection'] += 1
         
+        # 🔧 保存原始YOLO检测结果用于关卡5多人检测
+        # 重要：关卡2-4可能会修改或筛选person_detections，但关卡5需要完整的原始检测结果
+        # 来正确判断是否存在多人场景。这确保了多人检测的完整性和准确性。
+        original_yolo_detections = person_detections.copy()
+        
         # 关卡2: 几何质量评估（上半身筛选）
         best_detection = self._stage2_geometry_assessment(person_detections, frame)
         if not best_detection:
@@ -315,8 +320,8 @@ class YOLOMediaPipeSegmenter:
         
         # 关卡5: DWpose多人检测
         if self.dwpose_detector:
-            # 获取第一步的所有YOLO人体检测结果
-            all_yolo_detections = person_detections  # 来自关卡1的所有人体检测
+            # 🔧 使用原始YOLO检测结果，确保多人检测的完整性
+            all_yolo_detections = original_yolo_detections  # 来自关卡1的所有人体检测
             yolo_detections = []
             for det in all_yolo_detections:
                 # 正确处理YOLO检测的bbox格式
