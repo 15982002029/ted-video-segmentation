@@ -1,0 +1,20 @@
+graph TD
+    A[启动main.py] --> B[读取filtered_ted_segments.txt]
+    B --> C[提取已处理视频ID列表]
+    C --> D[启动VideoCrawler爬虫]
+    D --> E[批量爬取YouTube视频链接]
+    E --> F[过滤已处理视频]
+    F --> G{是否达到目标数量?}
+    G -->|否| H[继续爬取下一批]
+    G -->|是| I[保存新视频列表]
+    H --> E
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#f3e5f5
+    style D fill:#e8f5e8
+    style E fill:#e8f5e8
+    style F fill:#fff3e0
+    style G fill:#ffebee
+    style H fill:#f1f8e9
+    style I fill:#e0f2f1

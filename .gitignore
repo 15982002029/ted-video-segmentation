@@ -1,0 +1,106 @@
+# TED视频分割项目 .gitignore
+
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ================================
+# 虚拟环境
+# ================================
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ================================
+# IDE和编辑器
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ================================
+# 运行时生成的数据文件
+# ================================
+# 下载的视频文件
+downloads/*.mp4
+downloads/*.webm
+downloads/*.avi
+downloads/*.mov
+
+# 处理结果
+results/
+logs/
+backups/
+
+# 输出文件
+filtered_ted_segments.txt
+scraped_ted_videos.txt
+processed_videos.txt
+input_video_urls.txt
+echomimicv2_benchmark_url+start_timecode+end_timecode.txt
+*.txt
+
+# 临时文件
+temp_*.txt
+temp_cookies.txt
+youtube_debug.png
+
+# ================================
+# 大文件（本地保留，不上传到GitHub）
+# ================================
+# FFmpeg 可执行文件（用户需自行下载）
+ffmpeg/ffmpeg.exe
+ffmpeg/ffprobe.exe
+
+# 模型文件（会在运行时自动下载）
+yolov8n.pt
+*.pt
+models/dwpose/*.onnx
+
+# ================================
+# 系统文件
+# ================================
+.DS_Store
+Thumbs.db
+*.log
+
+# ================================
+# 保留但不上传的配置
+# ================================
+# 如果有敏感配置，在这里添加
+
+# ================================
+# 保留的重要文件（确保不被忽略）
+# ================================
+!requirements.txt
+!README.md
+!configs/*.yaml
+!models/dwpose/*.py
+!mermaid_codes/README.md

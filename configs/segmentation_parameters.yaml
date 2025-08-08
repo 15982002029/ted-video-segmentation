@@ -1,0 +1,211 @@
+# YOLO+MediaPipe视频分割系统配置文件
+# 用于TED视频演讲片段自动分割
+
+# ================================
+# 1. 通用配置
+# ================================
+general:
+  # 处理控制
+  debug_mode: false                    # 是否开启调试模式
+  parallel_processing: true            # 是否启用并行处理
+  max_workers: 4                       # 最大工作线程数
+  
+  # 输出控制
+  save_intermediate_results: true      # 是否保存中间处理结果
+  output_format: "mp4"                 # 输出视频格式
+  output_quality: "high"               # 输出质量 (low/medium/high)
+  
+  # 片段控制
+  min_segment_length: 39               # 最小片段长度（检测帧数，39个检测帧≈8秒视频）
+  max_segment_length: 0               # 最大片段长度（0表示不限制）
+  segment_overlap_threshold: 0.3       # 片段重叠阈值
+
+# ================================
+# 2. YOLO+MediaPipe 参数（主要方法）
+# ================================
+yolo_mediapipe:
+  # 模型配置
+  yolo_confidence_threshold: 0.5       # YOLO检测置信度阈值（从0.7降为0.5，提高检测率）
+  mediapipe_detection_confidence: 0.7      # MediaPipe检测置信度(从0.8降为0.7，提高检测率)
+  mediapipe_tracking_confidence: 0.6       # MediaPipe跟踪置信度(从0.7降为0.6，提高检测率)
+  mediapipe_model_complexity: 2        # MediaPipe模型复杂度 (0-2)
+  
+  # 处理优化
+  crop_to_person: true                 # 是否裁剪到人体区域
+  skip_frames: 4                      # 跳帧间隔（每5帧检测1帧：检测第5,10,15,20...帧）
+  max_frame_gap: 10                   # 允许的最大帧间隔（默认为skip_frames+1=5）
+  
+  # 几何质量参数（面部清晰度专项筛选）
+  min_person_area_ratio: 0.15          # 人体最小面积比例（提高，确保人物足够大）
+  min_person_height_ratio: 0.30        # 人体最小高度比例（提高，确保人物足够高）
+  max_person_height_ratio: 0.70        # 最大高度比例（限制为上半身，避免全身）
+  max_head_position_ratio: 0.40        # 头部最大位置比例（严格，确保头部在上半部分）
+  min_face_size_ratio: 0.015           # 面部最小尺寸比例（提高，确保面部清晰可见）
+  
+  # 面部清晰度专项参数
+  min_face_width_ratio: 0.04           # 面部最小宽度比例（从0.08降为0.04，适应TED远景拍摄）
+  min_face_height_ratio: 0.05          # 面部最小高度比例（从0.10降为0.05，适应TED远景拍摄）
+  max_face_aspect_ratio: 5             # 面部最大宽高比（从3增为5，容忍远景检测误差）
+  min_face_center_ratio: 0.15          # 面部中心最小位置比例（确保面部在画面中心区域）
+  
+  # MediaPipe姿态质量参数
+  visibility_threshold: 0.8            # 关键点可见性阈值（提高，确保质量）
+  stage3_visibility_threshold: 0.7         # 关键点可见度阈值(从0.8降为0.7，减少严格性)
+  
+  # 关卡3专项参数（半身人物严格筛选）
+  # min_shoulder_visibility: 0.9              # 肩膀最小可见度 - 已删除
+  lower_body_detection_threshold: 0.3       # 下半身检测阈值(放宽，避免误杀)
+  
+  # 🔧 中心位置检查参数 - 排除边缘人物（如观众）
+  min_center_x_ratio: 0.25                 # 人体中心X轴最小比例（画面左25%边界）
+  max_center_x_ratio: 0.75                 # 人体中心X轴最大比例（画面右75%边界）
+  min_center_y_ratio: 0.1                  # 人体中心Y轴最小比例（画面上10%边界）
+  max_center_y_ratio: 0.9                  # 人体中心Y轴最大比例（画面下90%边界）
+  
+  # 质量评估权重（针对上半身特写优化）
+  quality_weights:
+    upper_body: 0.5                    # 上半身权重（50%）
+    face_orientation: 0.3              # 面部朝向权重（30%）
+    hand_gesture: 0.15                 # 手势权重（15%）
+    body_ratio: 0.05                   # 身体比例权重（5%）
+  
+  # 质量阈值
+  quality_threshold: 0.6               # 帧质量阈值（提高，确保高质量）
+  segment_quality_threshold: 0.7       # 片段质量阈值（提高，确保高质量）
+  
+  # MediaPipe关键点检测参数（清理重复参数）
+  # min_shoulder_visibility: 0.9         # 最小肩膀可见度（避免面部特写）- 已删除
+  # 下半身检查参数：腰部（髋部）允许，膝盖/脚踝/脚趾零容忍
+  leg_foot_visibility_threshold: 0.2   # 膝盖/脚踝/脚趾可见度阈值（避免误检测）
+  
+  # 场景切换检测参数
+  enable_scene_change_detection: true   # 启用场景切换检测
+  scene_change_hist_threshold: 0.3     # 直方图相似度阈值（越低越严格）
+  scene_change_edge_threshold: 0.4     # 边缘密度变化阈值（越低越严格）
+  
+  # 多人检测参数
+  enable_multi_person_detection: true   # 启用多人检测
+  max_person_count: 1                   # 允许的最大人数
+  multi_person_landmark_threshold: 10   # 关键点数量阈值（单人约7-15个）
+  multi_person_confidence_threshold: 0.5 # 多人检测的置信度阈值
+
+# ================================
+# 3. DWpose多人检测参数（新增关卡5）
+# ================================
+dwpose_multi_person:
+  # DWpose模型配置
+  enable_dwpose_detection: true        # 启用DWpose检测进行多人场景过滤
+  dwpose_model_path: "models/dwpose"   # DWpose模型路径
+  dwpose_device: "cpu"                 # 设备选择 (cuda/cpu) - 使用CPU避免CUDA兼容性问题
+  
+  # 上半身关键点检测参数
+  upper_body_keypoints: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]  # 上半身关键点索引
+  max_upper_body_keypoints: 17         # 单人上半身最大关键点数
+  min_upper_body_keypoints: 10         # 单人上半身最小关键点数
+  keypoint_confidence_threshold: 0.05   # 关键点置信度阈值（降低以适配DWPose模型输出）
+  
+  # 多人检测参数
+  max_persons_per_frame: 1             # 每帧最大人数
+  person_confidence_threshold: 0.25     # 人体检测置信度阈值（降低以提高灵敏度）
+  person_distance_threshold: 50         # 人物间距离阈值（像素）
+  duplicate_detection_threshold: 0.7    # 重复检测阈值
+  nms_threshold: 0.4                    # 非极大值抑制阈值
+  
+  # 统计参数
+  enable_detailed_stats: true           # 启用详细统计
+  log_detection_results: true           # 记录检测结果
+
+# ================================
+# 4. 场景切换检测参数（新增关卡6）
+# ================================
+scene_change_detection:
+  # 场景切换检测配置
+  enable_scene_change_detection: true   # 启用场景切换检测
+  detection_method: "hybrid"            # 检测方法 (histogram/edge/hybrid)
+  
+  # 直方图方法参数
+  hist_threshold: 0.3                   # 直方图相似度阈值
+  hist_bins: 256                        # 直方图bin数量
+  hist_channels: [0, 1, 2]             # 使用的颜色通道
+  
+  # 边缘检测方法参数
+  edge_threshold: 0.4                   # 边缘密度变化阈值
+  edge_kernel_size: 3                   # 边缘检测核大小
+  edge_low_threshold: 50                # 边缘检测低阈值
+  edge_high_threshold: 150              # 边缘检测高阈值
+  
+  # 混合方法参数
+  hybrid_weight_hist: 0.6               # 直方图权重
+  hybrid_weight_edge: 0.4               # 边缘权重
+  hybrid_threshold: 0.35                # 混合阈值
+  
+  # 时间窗口参数
+  min_scene_duration: 2.0               # 最小场景持续时间（秒）
+  max_scene_changes_per_segment: 1      # 每个片段最大场景切换次数
+  
+  # 统计参数
+  enable_scene_stats: true              # 启用场景统计
+  log_scene_changes: true               # 记录场景切换
+
+# ================================
+# 5. 视频处理参数
+# ================================
+video_processing:
+  # 下载参数
+  download_quality: "best"             # 下载质量 (worst/best/best[height<=720])
+  download_format: "mp4"               # 下载格式
+  download_timeout: 300                # 下载超时时间（秒）
+  max_retries: 3                       # 最大重试次数
+  
+  # 处理参数
+  target_fps: null                     # 目标帧率（null=保持原始）
+  target_resolution: null              # 目标分辨率（null=保持原始）
+  video_codec: "libx264"               # 视频编码器
+  audio_codec: "aac"                   # 音频编码器
+  
+  # 输出参数
+  output_directory: "results/mediapipe_segments"  # 输出目录
+  temp_directory: "temp"               # 临时文件目录
+  cleanup_temp_files: true             # 是否清理临时文件
+  
+  # 文件命名
+  naming_format: "{video_index}_mediapipe_{segment_index}_quality_{quality:.3f}_duration_{duration:.1f}s"  # 文件命名格式
+
+# ================================
+# 6. 性能优化参数
+# ================================
+performance:
+  # 并行处理
+  enable_multiprocessing: true         # 启用多进程
+  process_pool_size: 4                 # 进程池大小
+  chunk_size: 10                       # 任务块大小
+  
+  # 内存管理
+  max_memory_usage_gb: 8               # 最大内存使用（GB）
+  garbage_collection_interval: 100     # 垃圾回收间隔（帧数）
+  frame_buffer_size: 50                # 帧缓冲区大小
+  
+  # 缓存设置
+  enable_result_caching: true          # 启用结果缓存
+  cache_directory: "cache"             # 缓存目录
+  cache_expiry_hours: 24               # 缓存过期时间（小时）
+
+# ================================
+# 7. 日志和监控参数
+# ================================
+logging:
+  # 日志级别
+  log_level: "INFO"                    # 日志级别 (DEBUG/INFO/WARNING/ERROR)
+  console_output: true                 # 控制台输出
+  file_output: true                    # 文件输出
+  log_file: "logs/segmentation.log"    # 日志文件路径
+  
+  # 进度监控
+  progress_update_interval: 50         # 进度更新间隔（帧数）
+  estimate_remaining_time: true        # 估算剩余时间
+  show_detailed_stats: true            # 显示详细统计
+  
+  # 错误处理
+  continue_on_error: true              # 遇到错误时继续处理
+  max_consecutive_errors: 5            # 最大连续错误数
+  error_recovery_attempts: 2           # 错误恢复尝试次数 

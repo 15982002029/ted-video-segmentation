@@ -1,0 +1,20 @@
+graph TD
+    A[获得新视频列表] --> B[SafeVideoProcessor初始化]
+    B --> C[创建数据备份]
+    C --> D[开始逐个处理视频]
+    D --> E[YOLO+MediaPipe四阶段筛选]
+    E --> F[实时写入filtered_ted_segments.txt]
+    F --> G[更新报告文件统计]
+    G --> H{还有视频待处理?}
+    H -->|是| D
+    H -->|否| I[处理完成]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
+    style E fill:#ffebee
+    style F fill:#e0f2f1
+    style G fill:#f1f8e9
+    style H fill:#ffebee
+    style I fill:#e0f2f1
