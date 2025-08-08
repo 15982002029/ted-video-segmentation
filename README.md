@@ -207,23 +207,6 @@ https://www.youtube.com/watch?v=video_id,00:05:12.250,00:05:28.875
 - ⏱️ 总片段时长：约8.2分钟
 - 🚀 平均处理速度：约1-2分钟/视频（取决于硬件配置）
 
-## 🔧 技术特点
-
-### 核心优势
-1. **🔄 端到端自动化**: 从视频爬取到片段输出的完整自动化流程
-2. **🧠 多模态融合**: 结合目标检测、姿态估计和场景分析
-3. **🛡️ 鲁棒性设计**: 六阶段筛选确保结果可靠性
-4. **⚙️ 参数可配置**: 支持针对不同场景的参数调优
-5. **✨ 高质量输出**: 严格的质量控制机制
-6. **🚀 高效处理**: 优化的算法流程支持快速处理
-7. **🛡️ 安全机制**: 自动备份、重复检测、增量处理
-
-### 适用场景
-- 🎓 学术研究中的视频数据准备
-- 🤖 AI训练数据集构建
-- 📺 视频内容自动化处理
-- 🎬 多媒体内容分析
-
 ## 📋 项目结构
 
 ```
@@ -247,13 +230,6 @@ ted_video_segmentation/
 └── mermaid_codes/                       # 📈 流程图源码
 ```
 
-## 📈 算法流程图
-
-项目包含详细的算法流程图文档：
-- 📊 `flowcharts/02_safe_processing_stage.png` - 安全处理阶段流程
-- 📊 `flowcharts_en/` - 英文版流程图
-- 📝 `mermaid_codes/` - 流程图源码
-
 ## 🔗 相关资源
 
 ### 模型和依赖
@@ -261,28 +237,3 @@ ted_video_segmentation/
 - [MediaPipe](https://mediapipe.dev/) - 实时姿态估计
 - [DWPose](https://github.com/IDEA-Research/DWPose) - 多人姿态检测
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) - YouTube视频下载
-
-## 📜 引用
-
-如果您在研究中使用了本项目，请引用：
-
-```bibtex
-@software{ted_video_segmentation,
-  title={TED Video Automatic Segmentation System},
-  subtitle={A Multi-stage Computer Vision Pipeline for High-quality Speaker Segment Extraction},
-  year={2024},
-  url={https://github.com/your-username/ted-video-segmentation}
-}
-```
-
-## 📧 联系方式
-
-- 📝 技术问题或建议：请通过 [GitHub Issues](https://github.com/your-username/ted-video-segmentation/issues) 联系
-- 📊 学术合作：欢迎通过邮件联系
-
-## ⚠️ 免责声明
-
-**注意**: 本项目仅用于学术研究目的，请遵守相关视频平台的使用条款和版权法律。使用本项目时请确保：
-- 遵守YouTube服务条款
-- 尊重视频内容的版权
-- 仅将处理结果用于学术研究
