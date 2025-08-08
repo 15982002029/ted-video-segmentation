@@ -102,11 +102,11 @@ dwpose_multi_person:
   upper_body_keypoints: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]  # 上半身关键点索引
   max_upper_body_keypoints: 17         # 单人上半身最大关键点数
   min_upper_body_keypoints: 10         # 单人上半身最小关键点数
-  keypoint_confidence_threshold: 0.05   # 关键点置信度阈值（降低以适配DWPose模型输出）
+  keypoint_confidence_threshold: 0.3    # 关键点置信度阈值（统一设置为0.3）
   
   # 多人检测参数
   max_persons_per_frame: 1             # 每帧最大人数
-  person_confidence_threshold: 0.25     # 人体检测置信度阈值（降低以提高灵敏度）
+  person_confidence_threshold: 0.3      # 人体检测置信度阈值（统一设置为0.3）
   person_distance_threshold: 50         # 人物间距离阈值（像素）
   duplicate_detection_threshold: 0.7    # 重复检测阈值
   nms_threshold: 0.4                    # 非极大值抑制阈值
