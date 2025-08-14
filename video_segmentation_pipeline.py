@@ -694,8 +694,8 @@ class VideoSegmentationPipeline:
             '-i', input_path,
             '-ss', str(start_time),  # 在输入后指定，确保精度
             '-t', str(duration),     # 精确的时长
-            '-c:v', 'libx264',       # 重新编码以确保精确切割
-            '-c:a', 'aac',           # 音频编码
+            '-c:v', 'copy',          # 复制视频流，避免编码问题
+            '-c:a', 'copy',          # 复制音频流
             '-avoid_negative_ts', 'make_zero',
             '-y',  # 覆盖输出文件
             output_path
