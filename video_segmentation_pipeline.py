@@ -696,20 +696,14 @@ class VideoSegmentationPipeline:
             '-t', str(duration),     # 精确的时长
             '-c:v', 'libx264',       # 重新编码以确保精确切割
             '-c:a', 'aac',           # 音频编码
-            '-preset', 'fast',       # 快速编码
             '-avoid_negative_ts', 'make_zero',
             '-y',  # 覆盖输出文件
             output_path
         ]
         
         try:
-            # 使用项目中的FFmpeg
-            ffmpeg_path = Path("ffmpeg/ffmpeg.exe")
-            if ffmpeg_path.exists():
-                cmd[0] = str(ffmpeg_path)
-            else:
-                # 备用：尝试系统FFmpeg
-                cmd[0] = 'ffmpeg'
+            # 直接使用系统FFmpeg
+            cmd[0] = 'ffmpeg'
             
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             
