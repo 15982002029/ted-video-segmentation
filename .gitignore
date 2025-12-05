@@ -60,12 +60,12 @@ logs/
 backups/
 
 # 输出文件
-filtered_ted_segments.txt
-scraped_ted_videos.txt
-processed_videos.txt
-input_video_urls.txt
-echomimicv2_benchmark_url+start_timecode+end_timecode.txt
-*.txt
+# filtered_ted_segments.txt
+# scraped_ted_videos.txt
+# processed_videos.txt
+# input_video_urls.txt
+# echomimicv2_benchmark_url+start_timecode+end_timecode.txt
+# *.txt
 
 # 临时文件
 temp_*.txt
